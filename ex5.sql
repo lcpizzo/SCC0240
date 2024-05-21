@@ -1,20 +1,27 @@
-SELECT  P.nome, P.n_quartos
-    FROM PROPRIEDADE P
-    GROUP BY P.n_quartos
-    CASE P.n_quartos > 1 THEN "Casa Inteira"
-    ELSE "Apenas um quarto"
+SELECT *
+  FROM PROPRIEDADE;
 
 SELECT 
-    P.NOME,
-    SUBSTRING(
-        P.ENDERECO,
-        CHARINDEX('/', P.ENDERECO) + 1,
-        CHARINDEX('/', P.ENDERECO, CHARINDEX('/', P.ENDERECO) + 1) - CHARINDEX('/', P.ENDERECO) - 1
-    ) AS cidade
-    FROM PRORPIEDADE P
-    GROUP BY 
-    SUBSTRING(
-        P.ENDERECO,
-        CHARINDEX('/', P.ENDERECO) + 1,
-        CHARINDEX('/', P.ENDERECO, CHARINDEX('/', P.ENDERECO) + 1) - CHARINDEX('/', P.ENDERECO) - 1
-    )
+    CASE 
+        WHEN n_quartos > 1 THEN 'Casa Inteira'
+        ELSE 'Apenas um quarto'
+    END AS tipo_propriedade,
+    COUNT(*) AS quantidade
+FROM 
+    PROPRIEDADE
+GROUP BY 
+    tipo_propriedade;
+
+SELECT 
+    cidade,
+    COUNT(*) AS quantidade
+FROM (
+    SELECT
+        split_part(endereco, '/', 2) AS cidade
+    FROM 
+        PROPRIEDADE
+) AS subquery
+GROUP BY 
+    cidade
+ORDER BY 
+    quantidade DESC;
